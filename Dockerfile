@@ -11,6 +11,9 @@ ln -sf /usr/share/zoneinfo/America/Fortaleza /etc/localtime   && \
 dpkg-reconfigure --frontend noninteractive tzdata  && \
 apt-get update && \
 apt-get install -y php7.3 php7.3-xml php7.3-cli php7.3-common php7.3-json php7.3-opcache php7.3-readline libapache2-mod-php7.3 php-pear php7.3-dev php7.3-pgsql php7.3-mysql && \
+apt-get install -y php7.3-bcmath php7.3-calendar php7.3-cgi  php7.3-ctype  php7.3-dom php7.3-exif php7.3-fileinfo php7.3-ftp php7.3-gettext php7.3-iconv php7.3-imap php7.3-mbstring php7.3-mysqli  && \
+apt-get install -y php7.3-mysqlnd php7.3-pdo php7.3-pdo-mysql php7.3-pdo-pgsql php7.3-phar php7.3-posix php7.3-shmop php7.3-simplexml php7.3-sockets php7.3-sysvmsg php7.3-sysvsem php7.3-sysvshm && \
+apt-get install -y php7.3-tokenizer php7.3-wddx php7.3-xmlreader php7.3-xmlwriter php7.3-xsl php7.3-zip composer && \
 apt-get install -y libaio1  && \
 apt-get install -y alien && \
 alien -i /files_aux/oracle-instantclient11.2-basic-11.2.0.4.0-1.x86_64.rpm  && \
@@ -25,13 +28,17 @@ phpize  && \
 make install  && \
 echo "extension=oci8.so" > /etc/php/7.3/mods-available/oci8.ini   && \
 ln -s /etc/php/7.3/mods-available/oci8.ini /etc/php/7.3/apache2/conf.d/oci8.ini  && \
+ln -s /etc/php/7.3/mods-available/oci8.ini /etc/php/7.3/cli/conf.d/oci8.ini  && \
 cd /files_aux/php-src-PHP-7.3.5/ext/pdo_oci/  && \
 phpize  && \
 ./configure --with-pdo-oci=instantclient,/usr/lib/oracle/11.2/client64/lib  && \
 make install  && \
 echo "extension=pdo_oci.so" > /etc/php/7.3/mods-available/pdo_oci.ini  && \
-ln -s /etc/php/7.3/mods-available/pdo_oci.ini /etc/php/7.3/apache2/conf.d/pdo_oci.ini 
-#RUN ln -sf /dev/stderr /var/log/apache2/error.log
+ln -s /etc/php/7.3/mods-available/pdo_oci.ini /etc/php/7.3/apache2/conf.d/pdo_oci.ini && \
+ln -s /etc/php/7.3/mods-available/pdo_oci.ini /etc/php/7.3/cli/conf.d/pdo_oci.ini
+#RUN chmod -R 777 /var/www/html
+RUN ln -sf /dev/stderr /var/log/apache2/error.log
 RUN rm -rf /files_aux
+WORKDIR /var/www/html/
 EXPOSE 80
 CMD apachectl -D FOREGROUND
